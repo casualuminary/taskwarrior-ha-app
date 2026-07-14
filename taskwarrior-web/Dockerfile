@@ -13,6 +13,8 @@ WORKDIR /app
 RUN gem install multi_json -v 1.15.0
 RUN gem install taskwarrior-web
 
+RUN which task-web && task-web --version
+
 # Copy the application
 COPY . .
 
@@ -20,4 +22,4 @@ COPY . .
 EXPOSE 9292
 
 # Start the application
-CMD ["bundle", "exec", "rackup", "-o", "0.0.0.0", "-p", "9292"]
+CMD ["/run.sh"]
