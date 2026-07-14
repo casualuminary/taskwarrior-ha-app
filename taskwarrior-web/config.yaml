@@ -1,5 +1,5 @@
 name: Taskwarrior Web
-version: "1.0"
+version: "1.0.1"
 slug: taskwarrior_web
 description: Taskwarrior web interface
 arch:
