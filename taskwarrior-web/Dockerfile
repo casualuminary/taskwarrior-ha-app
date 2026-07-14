@@ -1,55 +1,26 @@
-FROM ubuntu:16.04
+FROM ruby:2.7
 
-ENV DEBIAN_FRONTEND=noninteractive
-
+# Install Taskwarrior and build dependencies
 RUN apt-get update && apt-get install -y \
+    taskwarrior \
     build-essential \
-    cmake \
     git \
-    wget \
-    curl \
-    libssl-dev \
-    zlib1g-dev \
-    libreadline-dev \
-    libyaml-dev \
-    libsqlite3-dev \
-    sqlite3 \
-    libffi-dev \
-    libncurses5-dev \
-    pkg-config
+    && rm -rf /var/lib/apt/lists/*
 
-#
-# Build Ruby 2.3
-#
-WORKDIR /tmp
+# Set the working directory
+WORKDIR /app
 
-RUN wget https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.8.tar.gz && \
-    tar xzf ruby-2.3.8.tar.gz && \
-    cd ruby-2.3.8 && \
-    ./configure && \
-    make -j$(nproc) && \
-    make install
+# Copy Gem definitions first to leverage Docker layer caching
+COPY Gemfile Gemfile.lock* ./
 
+# Install Ruby gems
+RUN bundle install
 
-#
-# Build Taskwarrior 2.5.1
-#
-WORKDIR /tmp
+# Copy the application
+COPY . .
 
-RUN git clone --branch v2.5.1 https://github.com/GothenburgBitFactory/taskwarrior.git && \
-    cd taskwarrior && \
-    cmake -DCMAKE_BUILD_TYPE=release . && \
-    make -j$(nproc) && \
-    make install
+# Expose the default web port
+EXPOSE 9292
 
-
-#
-# Install taskwarrior-web compatible gem
-#
-RUN gem install taskwarrior-web -v 1.1.12
-
-
-COPY run.sh /run.sh
-RUN chmod +x /run.sh
-
-CMD ["/run.sh"]
+# Start the application
+CMD ["bundle", "exec", "rackup", "-o", "0.0.0.0", "-p", "9292"]
