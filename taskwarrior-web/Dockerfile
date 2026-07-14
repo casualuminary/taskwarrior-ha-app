@@ -10,11 +10,8 @@ RUN apt-get update && apt-get install -y \
 # Set the working directory
 WORKDIR /app
 
-# Copy Gem definitions first to leverage Docker layer caching
-COPY Gemfile Gemfile.lock* ./
-
-# Install Ruby gems
-RUN bundle install
+RUN gem install multi_json -v 1.15.0
+RUN gem install taskwarrior-web
 
 # Copy the application
 COPY . .
