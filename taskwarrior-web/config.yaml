@@ -1,0 +1,19 @@
+name: Taskwarrior Web
+version: "1.0"
+slug: taskwarrior_web
+description: Taskwarrior web interface
+arch:
+  - amd64
+  - aarch64
+startup: services
+boot: auto
+
+ports:
+  5678/tcp: 5678
+
+map:
+  - config:rw
+
+options: {}
+
+schema: {}
