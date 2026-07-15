@@ -1,34 +1,36 @@
-FROM ruby:2.4
+ARG BUILD_FROM
+FROM ${BUILD_FROM}
 
-RUN apt-get update && apt-get install -y \
-    taskwarrior \
-    build-essential \
-    git \
- && rm -rf /var/lib/apt/lists/*
+ARG BUILD_ARCH
+ARG BUILD_VERSION
 
-# Install Taskwarrior 2.5.1 from release source archive
-RUN wget -O taskwarrior.tar.gz \
-    https://github.com/GothenburgBitFactory/taskwarrior/archive/refs/tags/v2.5.1.tar.gz \
-    && tar xzf taskwarrior.tar.gz \
-    && cd taskwarrior-2.5.1 \
-    && mkdir build \
-    && cd build \
-    && cmake .. -DENABLE_SYNC=OFF \
-    && make -j$(nproc) \
-    && make install \
-    && cd / \
-    && rm -rf taskwarrior*
+LABEL \
+    io.hass.arch="${BUILD_ARCH}" \
+    io.hass.version="${BUILD_VERSION}"
 
-# Old Ruby tooling required by taskwarrior-web
-RUN gem install bundler -v 1.17.3
+RUN apk add --no-cache \
+    ruby \
+    ruby-dev \
+    ruby-bundler \
+    task \
+    tzdata \
+    build-base \
+    git
 
-RUN gem install multi_json -v 1.15.0
+WORKDIR /app
 
-RUN gem install taskwarrior-web -v 1.1.12
+# Fetch the Taskwarrior Web source
+RUN git clone \
+    --branch v1.3.0 \
+    https://github.com/casualuminary/taskwarrior-web.git \
+    /app/taskwarrior-web
+
+WORKDIR /app/taskwarrior-web
+
+# Install Ruby dependencies
+RUN bundle install
 
 COPY run.sh /run.sh
-RUN chmod +x /run.sh
-
-EXPOSE 5678
+RUN chmod a+x /run.sh
 
 CMD ["/run.sh"]

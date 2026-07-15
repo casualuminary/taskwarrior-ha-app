@@ -1,15 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 
-export HOME=/config/taskwarrior
+export TASKDATA=/config/.task
 
-mkdir -p "$HOME/.task"
-
-if [ ! -f "$HOME/.taskrc" ]; then
-cat > "$HOME/.taskrc" <<EOF
-data.location=$HOME/.task
-EOF
-fi
+mkdir -p "$TASKDATA"
 
 exec task-web \
-  --host 0.0.0.0 \
-  --port 5678
+  -o 0.0.0.0 \
+  -p 5678
+
+echo "task-web exited: $?"
+sleep 300

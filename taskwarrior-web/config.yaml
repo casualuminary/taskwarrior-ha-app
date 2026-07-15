@@ -2,11 +2,17 @@ name: Taskwarrior Web
 version: "1.0.1"
 slug: taskwarrior_web
 description: Taskwarrior web interface
+
 arch:
   - amd64
   - aarch64
+
 startup: services
 boot: auto
+
+ingress: true
+ingress_port: 5678
+panel_icon: mdi:checkbox-marked-outline
 
 ports:
   5678/tcp: 5678
