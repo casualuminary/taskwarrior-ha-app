@@ -1,10 +1,12 @@
-FROM ruby:3.3-alpine
+FROM ruby:3.3.6-bookworm
 
-RUN apk add --no-cache \
-    git \
-    task \
-    tzdata \
-    build-base
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        git \
+        taskwarrior \
+        tzdata \
+        build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -16,8 +18,7 @@ RUN git clone \
 
 WORKDIR /app/taskwarrior-web
 
-RUN bundle config set without 'development test' && \
-    bundle install
+RUN bundle install
 
 COPY run.sh /run.sh
 RUN chmod a+x /run.sh
