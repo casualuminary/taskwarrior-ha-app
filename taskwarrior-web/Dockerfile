@@ -1,15 +1,6 @@
-ARG BUILD_FROM
-FROM ${BUILD_FROM}
-
-ARG BUILD_VERSION
-ARG BUILD_ARCH
-
-ENV LANG=C.UTF-8
+FROM ruby:3.3-alpine
 
 RUN apk add --no-cache \
-    ruby \
-    ruby-dev \
-    ruby-bundler \
     git \
     task \
     tzdata \
