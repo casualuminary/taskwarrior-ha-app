@@ -1,14 +1,9 @@
-#!/usr/bin/with-contenv bash
+#!/bin/sh
 
 export TASKDATA=/config/.task
+export TASKRC=/config/.taskrc
 
 mkdir -p "$TASKDATA"
+mkdir -p /run/nginx
 
-cd /app/taskwarrior-web || exit 1
-
-exec bundle exec task-web \
-    -o 0.0.0.0 \
-    -p 5678
-
-echo "PID=$$"
-ps
+exec /start.sh
