@@ -1,25 +1,16 @@
-ARG BUILD_FROM
-FROM ${BUILD_FROM}
-
-ARG BUILD_ARCH
-ARG BUILD_VERSION
-
-LABEL \
-    io.hass.arch="${BUILD_ARCH}" \
-    io.hass.version="${BUILD_VERSION}"
-
+FROM alpine:3.22
+# Install base packages
 RUN apk add --no-cache \
     ruby \
     ruby-dev \
     ruby-bundler \
+    git \
     task \
     tzdata \
-    build-base \
-    git
+    build-base
 
 WORKDIR /app
 
-# Fetch the Taskwarrior Web source
 RUN git clone \
     --branch v1.3.0 \
     https://github.com/casualuminary/taskwarrior-web.git \
@@ -27,7 +18,6 @@ RUN git clone \
 
 WORKDIR /app/taskwarrior-web
 
-# Install Ruby dependencies
 RUN bundle install
 
 COPY run.sh /run.sh
