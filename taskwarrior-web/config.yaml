@@ -1,7 +1,8 @@
-name: Taskwarrior WebUI
+name: Taskwarrior Web
 version: "1.0.0"
-slug: taskwarrior_webui
-description: Taskwarrior Web UI
+slug: taskwarrior_web
+
+description: Web interface for Taskwarrior
 
 arch:
   - amd64
@@ -10,11 +11,12 @@ arch:
 startup: services
 boot: auto
 
+init: false
+
 ingress: true
 ingress_port: 80
 
-ports:
-  80/tcp: 80
+ports: {}
 
 map:
   - config:rw

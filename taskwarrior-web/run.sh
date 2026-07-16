@@ -1,9 +1,5 @@
-#!/bin/sh
+#!/usr/bin/with-contenv bashio
 
-export TASKDATA=/config/.task
-export TASKRC=/config/.taskrc
+cd /opt/taskwarrior-web
 
-mkdir -p "$TASKDATA"
-mkdir -p /run/nginx
-
-exec /start.sh
+exec bundle exec task-web
